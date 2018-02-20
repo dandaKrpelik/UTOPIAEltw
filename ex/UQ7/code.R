@@ -15,6 +15,12 @@ ctypes= 4
 sig <- computeSystemSurvivalSignature(gr)
 
 
+N1 = c(10,10,15,20)
+
+sampleT1 = rexp(N1[1],0.55)
+sampleT2 = rweibull(N1[2],2.2,1.8)
+sampleT3 = exp(rnorm(N1[3], 0.4,0.9))
+sampleT4 = rgamma(N1[4], scale=0.9, shape=3.2)
 
 prior <- function(t, typ)
 {
@@ -85,17 +91,11 @@ prior <- function(t, typ)
 
 
 
-N1 = c(10,10,15,20)
-
-sampleT1 = rexp(N1[1],0.55)
-sampleT2 = rweibull(N1[2],2.2,1.8)
-sampleT3 = exp(rnorm(N1[3], 0.4,0.9))
-sampleT4 = rgamma(N1[4], scale=0.9, shape=3.2)
 
 Pli <- function(l, s, n, y0, n0, M)
 {
 	out = choose(M, l)
-	nom = beta(l+n0*y0+s, M-l+n*(1-y0)+n - s)
+	nom = beta(l+n0*y0+s, M-l+n0*(1-y0)+n - s)
 	den = beta(n0*y0+s, n0*(1-y0)+n-s)
 	return (out*nom/den)
 }
@@ -125,7 +125,15 @@ preciseSurvival <- function(t)
 		y0[i] = (pr[[1]][1]+pr[[1]][2])/2
 		n0[i] = (pr[[2]][1]+pr[[2]][2])/2
 	}
-	out = sum(lapply( sig, function(x){ x[ctypes+1]*Pl(x[1:ctypes], s, N1, y0, n0, M_vect) } ))
+	
+	out = 0
+	pls = c()
+	for (i in 1:nrow(sig))
+	{
+		#pls = append(pls,Pl(sig[i,1:ctypes], s, N1, y0, n0, M_vect) )
+		out = out + sig[i,ctypes+1]*Pl(sig[i,1:ctypes], s, N1, y0, n0, M_vect)
+	}
+	return (out)
 }
 
 
