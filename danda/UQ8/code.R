@@ -1,20 +1,27 @@
-rdirichlet <- function(n, p)
+rdir0 <- function(p)
 {
+	n = length(p)
 	out = rgamma(n, p, 1)
 	sm = sum(out)
 	out = out / sm
 	return(out)
 }
 
-
-sampleQ <- function(n,k)
+rdirichlet <- function(n, p)
 {
+	k = length(p)
 	p = rep(2/k,k)
 	out = c()
 	for (i in 1:n)
 	{
-		out = rbind(out, rdirichlet(k,p))
+		out = rbind(out, rdir0(p))
 	}	
 	return(out)
+}
+
+
+sampleQ <- function(n,k)
+{
+	return(rdirichlet(n, rep(2/k,k)))
 }
 
