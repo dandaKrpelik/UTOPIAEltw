@@ -7,10 +7,14 @@ rdirichlet <- function(n, p)
 }
 
 
-sampleQ <- function(n)
+sampleQ <- function(n,k)
 {
-	p = rep(2/n,n)
-	out = rdirichlet(n,p)
+	p = rep(2/k,k)
+	out = c()
+	for (i in 1:n)
+	{
+		out = rbind(out, rdirichlet(k,p))
+	}	
 	return(out)
 }
 
