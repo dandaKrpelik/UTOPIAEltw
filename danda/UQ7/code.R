@@ -110,21 +110,34 @@ Pl <- function(l, s, n , y0, n0 , M)
 	return(out)
 }
 
-
-
 preciseSurvival <- function(t)
 {
+  s = c(sum(sampleT1 > t),sum(sampleT2 > t),sum(sampleT3 > t),sum(sampleT4 > t))
+  
+  y0 = rep(0,ctypes)
+  n0 = rep(0,ctypes)
+  
+  for (i in 1:ctypes)
+  {
+    pr = prior(t,i)
+    y0[i] = (pr[[1]][1]+pr[[1]][2])/2
+    n0[i] = (pr[[2]][1]+pr[[2]][2])/2
+  }
+  
+  out = 0
+  pls = c()
+  for (i in 1:nrow(sig))
+  {
+    #pls = append(pls,Pl(sig[i,1:ctypes], s, N1, y0, n0, M_vect) )
+    out = out + sig[i,ctypes+1]*Pl(sig[i,1:ctypes], s, N1, y0, n0, M_vect)
+  }
+  return (out)
+}
+
+
+preciseSurvivalWP <- function(t,y0,n0)
+{
 	s = c(sum(sampleT1 > t),sum(sampleT2 > t),sum(sampleT3 > t),sum(sampleT4 > t))
-	
-	y0 = rep(0,ctypes)
-	n0 = rep(0,ctypes)
-	
-	for (i in 1:ctypes)
-	{
-		pr = prior(t,i)
-		y0[i] = (pr[[1]][1]+pr[[1]][2])/2
-		n0[i] = (pr[[2]][1]+pr[[2]][2])/2
-	}
 	
 	out = 0
 	pls = c()
@@ -165,8 +178,65 @@ impreciseSurvival <- function(t, N)
       argn0max[i] = n0min[i]
     }
     
-    if ((s[i]+M_vect[i]-1)/(N[i]+M_vect[i]-1) > y0min[i])
+    if ((s[i]+M_vect[i]-1)/(N[i]+M_vect[i]-1) < y0min[i])
+    {
+      argn0min[i] = n0min[i]
+      argn0max[i] = n0max[i]
+    }
       
+    noopti= 0
+    for (i in 1:ctypes)
+    {
+      if (argn0min[i] < 0)
+      {
+        noopti = noopti + 1
+      }
+    }
+    
+    ofncmin <- function(p)
+    {
+      y0 = y0min
+      
+      ind = 1
+      n0 = argn0min
+      for (i in 1:ctypes)
+      {
+        if (n0[i]<0)
+        {
+          n0[i] = p[ind]
+          ind = ind +1
+        }
+      }
+      
+      return(preciseSurvivalWP(t, y0, n0))
+    }
+    
+    ofncmax <- function(p)
+    {
+      y0 = y0max
+      
+      ind = 1
+      n0 = argn0max
+      for (i in 1:ctypes)
+      {
+        if (n0[i]<0)
+        {
+          n0[i] = p[ind]
+          ind = ind +1
+        }
+      }
+      
+      return(-preciseSurvivalWP(t, y0, n0))
+    }
+    
+    
+    if (noopti > 0)
+    {
+      #TODO
+      
+      
+    }
+    
   }  
   
   
