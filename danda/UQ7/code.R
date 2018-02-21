@@ -136,4 +136,42 @@ preciseSurvival <- function(t)
 	return (out)
 }
 
+impreciseSurvival <- function(t, N)
+{
+  s = c(sum(sampleT1 > t),sum(sampleT2 > t),sum(sampleT3 > t),sum(sampleT4 > t))
+  
+  y0min = rep(0,ctypes) #arg of solution
+  y0max = rep(0,ctypes)
+  
+  n0min = rep(0,ctypes) # for calculating bounds of feasible reg
+  n0max = rep(0,ctypes)
+  
+  argn0min = rep(-1,ctypes) # for calculating bounds of feasible reg
+  argn0max = rep(-1,ctypes)
+  
+  
+  for (i in 1:ctypes)
+  {
+    pr = prior(t,i)
+    y0min[i] = pr[[1]][1]
+    y0max[i] = pr[[1]][2]
+    
+    n0min[i] = pr[[2]][1]
+    n0max[i] = pr[[2]][2]
+  
+    if (s[i]/(N[i]+M_vect[i]-1) > y0min[i])
+    {
+      argn0min[i] = n0max[i]
+      argn0max[i] = n0min[i]
+    }
+    
+    if ((s[i]+M_vect[i]-1)/(N[i]+M_vect[i]-1) > y0min[i])
+      
+  }  
+  
+  
+  
+  
+  
+}
 

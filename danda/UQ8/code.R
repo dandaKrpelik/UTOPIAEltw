@@ -4,7 +4,7 @@ rdir0 <- function(p)
 	out = rep(0,n)
 	for (i in 1:n)
 	{
-		out[i] = rgamma(n, p[i], 1)
+		out[i] = rgamma(1, p[i], 1)
 	}
 	sm = sum(out)
 	out = out / sm
@@ -130,4 +130,4 @@ findMin <- function(xs, eps = 1e-4)
 	return (res)
 }
 
-
+samples = sampleQ(50,5)
