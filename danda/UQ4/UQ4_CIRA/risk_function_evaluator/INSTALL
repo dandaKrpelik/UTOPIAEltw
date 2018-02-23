@@ -1,0 +1,31 @@
+INSTALLATION instructions for the VaR and CVaR risk function evaluator.
+
+1. Open R or rstudio and install the 'fExtremes' package with the following command:
+
+       install.packages("fExtremes")
+
+2. Copy 'adg.risk_fnct.R' into an executable directory path.
+      
+3. Test the installation launching the following bash commands:
+
+       adg.risk_fnct.R --Nboot=1000 --Vname=OB_00000 --alpha=0.9 --DB=DATABASE.des --plot=true > VaR_CVaR.dat
+
+       diff VaR_CVaR.dat VaR_CVaR.ref
+
+   You should note only small changes in the bootstrap statistics, due to the random choice of
+   the generator seeds like:
+
+       22c22
+       < t1* 0.00607264 5.1086e-07 4.165886e-06
+       ---
+       > t1* 0.00607264 1.3359e-07 4.041479e-06
+       47c47
+       < t1* 0.006086446 -5.15424e-07 4.774084e-06
+       ---
+       > t1* 0.006086446 -5.19291e-07 4.864065e-06
+       58c58
+       < CVaR.ci  0.95    0.006076894    0.006095479 
+       ---
+       > CVaR.ci  0.95    0.006076148    0.006094658 
+
+

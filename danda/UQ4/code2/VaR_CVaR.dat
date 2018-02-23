@@ -1,0 +1,59 @@
+plot =  TRUE 
+Nboot =  1000 
+DB    =  DB1.des 
+Vname =  OB_00000 
+alpha =  0.9 
+DB size =  100 
+ VaR =  0.00622363 
+CVaR =  0.006247181 
+
+
+ VaR_Bootstrap:
+
+ORDINARY NONPARAMETRIC BOOTSTRAP
+
+
+Call:
+boot(data = f, statistic = varboot, R = Nboot, alpha = alpha)
+
+
+Bootstrap Statistics :
+      original       bias     std. error
+t1* 0.00622363 -2.97087e-06 8.478243e-06
+BOOTSTRAP CONFIDENCE INTERVAL CALCULATIONS
+Based on 1000 bootstrap replicates
+
+CALL : 
+boot.ci(boot.out = b1, type = "perc")
+
+Intervals : 
+Level     Percentile     
+95%   ( 0.0062,  0.0062 )  
+Calculations and Intervals on Original Scale
+VaR.ci  0.95    0.00620596    0.00623438 
+
+
+CVaR_Bootstrap:
+
+ORDINARY NONPARAMETRIC BOOTSTRAP
+
+
+Call:
+boot(data = f, statistic = cvarboot, R = Nboot, alpha = alpha)
+
+
+Bootstrap Statistics :
+       original       bias    std. error
+t1* 0.006247181 -8.62104e-07 1.00484e-05
+BOOTSTRAP CONFIDENCE INTERVAL CALCULATIONS
+Based on 1000 bootstrap replicates
+
+CALL : 
+boot.ci(boot.out = b2, type = "perc")
+
+Intervals : 
+Level     Percentile     
+95%   ( 0.0062,  0.0063 )  
+Calculations and Intervals on Original Scale
+CVaR.ci  0.95    0.00622573    0.006265552 
+

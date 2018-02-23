@@ -1,0 +1,11 @@
+ERROR = 0
+MACH = 0.1
+a = 3.050
+CL = 0.5000
+Cm = -0.0383
+CD = 0.756297E-02
+CDf = 0.00490 
+CDp = 0.00267
+Airfoil_maximum_thickness = 0.118604466E+00
+Airfoil_leading_edge_radius = 0.154423265E-01
+Airfoil_trailing_edge_angle = 0.127855045E+02

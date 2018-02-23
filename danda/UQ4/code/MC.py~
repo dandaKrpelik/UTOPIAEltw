@@ -1,0 +1,113 @@
+from subprocess import call
+import numpy as np
+import matplotlib.pyplot as plt
+
+baseval = {'CL':0.5, 'MACH': 0.1, 'RN':500000, 'XTRLO':0.95, 'XTRUP':1.0, 'MXT': 0.12}
+for i in range(10):
+	wlab = 'W{0}'.format(i)
+	ulab = 'U{0}'.format(i)
+	baseval.update({wlab:0.5, ulab:0.1})
+
+text = \
+"CL = {CL}\n\
+MACH = {MACH}\n\
+Reynolds_number = {RN}\n\
+XTRLO = {XTRLO}\n\
+XTRUP = {XTRUP}\n\
+MAX_THICK = {MXT}\n\
+W(0) = {W0}\n\
+W(1) = {W1}\n\
+W(2) = {W2}\n\
+W(3) = {W3}\n\
+W(4) = {W4}\n\
+W(5) = {W5}\n\
+W(6) = {W6}\n\
+W(7) = {W7}\n\
+W(8) = {W8}\n\
+W(9) = {W9}\n\
+U(10) = {U0}\n\
+U(11) = {U1}\n\
+U(12) = {U2}\n\
+U(13) = {U3}\n\
+U(14) = {U4}\n\
+U(15) = {U5}\n\
+U(16) = {U6}\n\
+U(17) = {U7}\n\
+U(18) = {U8}\n\
+U(19) = {U9}\n\
+"
+
+def writeIN(dic):
+	values = baseval.copy()
+	values.update(dic)
+	#print(text.format(**values))	
+	
+	textToWrite = text.format(**values)
+	with open("eval_obj.in",'w') as f:
+		f.write(textToWrite)
+
+def runSim():
+	call("./run_xfoil.sh")
+
+def readCD():
+	with open("eval_obj.out") as f:
+		count = 0
+		for line in f:
+			count += 1
+			if count == 6:
+				out = float(line[5:])
+				return out
+
+
+def MCsampling(N, alfa = .25, w = None, resname = None):
+
+	CDS = []
+	if w is None:
+		w = np.zeros(10)
+
+	for iteration in range(N):
+		us = (np.random.rand(10)-0.5)*alfa
+		
+		params = {}
+		for i in range(10):
+			wlab = "W{0}".format(i)
+			ulab = "U{0}".format(i)
+			params.update({wlab:w[i], ulab:us[i]})
+		writeIN(params)
+		runSim()
+		val = readCD()
+		CDS.append(val)
+		
+
+	if not resname is None:	
+		plt.figure()
+		plt.hist(CDS)
+		plt.savefig(resname+"_hist.png")
+		
+	return CDS				
+
+def checkVarRange(cds):
+	params = {}
+	for i in range(10):
+		wlab = "W{0}".format(i)
+		ulab = "U{0}".format(i)
+		params.update({wlab:0, ulab:0})
+	writeIN(params)
+	runSim()
+	baseCD = readCD()
+
+
+	n = len(cds)
+	diffs = np.zeros(n)
+	reldiffs = np.zeros(n)
+	for i in range(n):
+		diffs[i] = baseCD - cds[i]
+		reldiffs[i] = abs(diffs[i])/baseCD
+
+	print("min: %f \t max: %f" % (min(reldiffs),max(reldiffs)))
+	return reldiffs
+
+
+def testAirfoils(n,MCN=50):
+	for foil in range(n):
+		MCsampling(MCN, w=(2*np.random.rand(10)-1), resname = str(foil))

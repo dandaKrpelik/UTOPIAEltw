@@ -1,0 +1,17 @@
+INSTALLATION:
+
+To run the XFOIL-based parametric airfoil section evaluator:
+
+1. copy run_xfoil.sh into an executable directory path.
+2. launch 'run_xfoil.sh' in the directory containing the input
+   file 'eval_obj.in'
+
+To test the correct operation of the calculation chain,
+compare the output file 'eval_obj.out' with the template
+'eval_obj.ref' in the folder.
+
+   diff eval_obj.out eval_obj.ref
+
+DEPENDENCIES:
+
+1. GNU sharutils
